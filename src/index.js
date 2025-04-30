@@ -26,11 +26,25 @@ function appendWidget(widget, parent) {
     parent.append(widget);
 }
 
+function capitalize(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 function renderLocation(location) {
     const locationDisplay = document.querySelector("[data-location-display]");
-    capitalizedLocation = location.charAt(0).toUpperCase() + location.slice(1);
-    locationDisplay.textContent = capitalizedLocation;
+    locationDisplay.textContent = capitalize(location);
 }
+
+function renderTemp(temp) {
+    const tempDisplay = document.querySelector("[data-temp]");
+    tempDisplay.textContent = Math.floor(temp);
+}
+
+function renderConditions(conditions) {
+    const conditionsDisplay = document.querySelector("[data-conditions]");
+    conditionsDisplay.textContent = capitalize(conditions);
+}
+
 
 //---Widgets---//
 function locationDisplay() {
@@ -62,8 +76,8 @@ function weatherInfoDisplay() {
 //User should be able to change temp between C and F
     const weatherInfoWrapper = document.createElement("div");
     weatherInfoWrapper.innerHTML = `
-        <span class="info-wrapper__conditions">Conditions</span>
-        <span class="info-wrapper__temp" data-scale="c">20 &#xb0</span>
+        <span class="info-wrapper__conditions" data-conditions>Conditions</span>
+        <span class="info-wrapper__temp" data-scale="f" data-temp>20 &#xb0</span>
         <!-- celsius -->
         <button class="info-wrapper__btn info-wrapper__btn--c">&#x2103</button> 
         <!-- fahrenheit -->
@@ -91,6 +105,9 @@ function locationInputForm() {
         const userInput = inputField.value; //need some form validation
         const locationInfo = await processLocationInfo(userInput);
         renderLocation(locationInfo[0]);
+        renderTemp(locationInfo[1]);
+        renderConditions(locationInfo[2]);
+        inputField.value = "";
     })
 
     return locationInputSection;
