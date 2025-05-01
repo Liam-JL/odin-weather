@@ -1,3 +1,6 @@
+import seal from "./shared/images/seal.png";
+import "./shared/styles/styles.css";
+
 //---Entities----
 async function weatherCaller(location) {
     const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?unitGroup=us&key=4V24X88E3HZECB9ZLF5WJXLXH&contentType=json`);
@@ -45,7 +48,6 @@ function renderConditions(conditions) {
     conditionsDisplay.textContent = capitalize(conditions);
 }
 
-
 //---Widgets---//
 function locationDisplay() {
     const locationDisplaySection = document.createElement("section");
@@ -66,7 +68,7 @@ function appMain() {
 function weatherGifDisplay() {
     const imgDiv = document.createElement("div");
     imgDiv.innerHTML = `
-        <img src="" alt="" class="gif-container__img">
+        <img src="${seal}" alt="" class="gif-container__img">
     `
     imgDiv.classList = "gif-container";
     return imgDiv;
@@ -77,11 +79,12 @@ function weatherInfoDisplay() {
     const weatherInfoWrapper = document.createElement("div");
     weatherInfoWrapper.innerHTML = `
         <span class="info-wrapper__conditions" data-conditions>Conditions</span>
-        <span class="info-wrapper__temp" data-scale="f" data-temp>20 &#xb0</span>
+        <span class="info-wrapper__temp" data-scale="f" data-temp>0</span>
+        <span class="info-wrapper__degree">&#xb0</span>
         <!-- celsius -->
-        <button class="info-wrapper__btn info-wrapper__btn--c">&#x2103</button> 
+        <button class="info-wrapper__btn info-wrapper__btn--c" data-btn>&#x2103</button> 
         <!-- fahrenheit -->
-        <button class="info-wrapper__btn info-wrapper__btn--f">&#x2109</button>
+        <button class="info-wrapper__btn info-wrapper__btn--f" data-btn = "active">&#x2109</button>
     `
     weatherInfoWrapper.className = "info-wrapper"
     return weatherInfoWrapper;
@@ -91,9 +94,8 @@ function locationInputForm() {
     const locationInputSection = document.createElement("section");
     locationInputSection.innerHTML = `
         <form class="location-input-form">
-            <span><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q146 0 255.5 91.5T872-559h-82q-19-73-68.5-130.5T600-776v16q0 33-23.5 56.5T520-680h-80v80q0 17-11.5 28.5T400-560h-80v80h80v120h-40L168-552q-3 18-5.5 36t-2.5 36q0 131 92 225t228 95v80Zm364-20L716-228q-21 12-45 20t-51 8q-75 0-127.5-52.5T440-380q0-75 52.5-127.5T620-560q75 0 127.5 52.5T800-380q0 27-8 51t-20 45l128 128-56 56ZM620-280q42 0 71-29t29-71q0-42-29-71t-71-29q-42 0-71 29t-29 71q0 42 29 71t71 29Z"/></svg></span>
-            <input type="text" placeholder="location" class="input-form__input-field">
-            <button>Search</button>
+            <input type="text" placeholder="Search..." class="input-form__input-field">
+            <button class="input-form__submit-btn"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q146 0 255.5 91.5T872-559h-82q-19-73-68.5-130.5T600-776v16q0 33-23.5 56.5T520-680h-80v80q0 17-11.5 28.5T400-560h-80v80h80v120h-40L168-552q-3 18-5.5 36t-2.5 36q0 131 92 225t228 95v80Zm364-20L716-228q-21 12-45 20t-51 8q-75 0-127.5-52.5T440-380q0-75 52.5-127.5T620-560q75 0 127.5 52.5T800-380q0 27-8 51t-20 45l128 128-56 56ZM620-280q42 0 71-29t29-71q0-42-29-71t-71-29q-42 0-71 29t-29 71q0 42 29 71t71 29Z"/></svg></button>
         </form>
     `;
     locationInputSection.className = "location-input-section";
@@ -103,6 +105,7 @@ function locationInputForm() {
         e.preventDefault();
         const inputField = locationInputSection.querySelector(".input-form__input-field");
         const userInput = inputField.value; //need some form validation
+        //TODO add loading animation for when processLocationInfo finishes
         const locationInfo = await processLocationInfo(userInput);
         renderLocation(locationInfo[0]);
         renderTemp(locationInfo[1]);
