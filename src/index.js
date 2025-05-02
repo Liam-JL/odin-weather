@@ -1,5 +1,6 @@
 import seal from "./shared/images/seal.png";
 import "./shared/styles/styles.css";
+import colors from "./shared/styles/background-colors.json";
 
 //---Entities----
 async function weatherCaller(location) {
@@ -48,6 +49,34 @@ function renderConditions(conditions) {
     conditionsDisplay.textContent = capitalize(conditions);
 }
 
+function convertTemp() {
+    // const tempDisplay = document.querySelector("[data-temp]");
+    // const temp = tempDisplay.textContent;
+    // const tempData = tempDisplay.dataset.activeScale;   
+    // console.log(tempData)
+}
+
+function handleTempChangeBtn() {
+    //get temp
+    //get active scale
+    //convert temp to scale that isn't the active scale
+    //change the active scale to scale that isn't the active scale
+}
+
+function changeBackgroundColor(conditions) {
+    const app = document.getElementById("app");
+    app.style.backgroundColor = colors[conditions];
+}
+
+async function handleFormSubmit(userInput) {
+    const locationInfo = await processLocationInfo(userInput);
+    renderLocation(locationInfo[0]);
+    renderTemp(locationInfo[1]);
+    const conditions = locationInfo[2]
+    renderConditions(conditions);
+    changeBackgroundColor(conditions)
+}
+
 //---Widgets---//
 function locationDisplay() {
     const locationDisplaySection = document.createElement("section");
@@ -79,14 +108,22 @@ function weatherInfoDisplay() {
     const weatherInfoWrapper = document.createElement("div");
     weatherInfoWrapper.innerHTML = `
         <span class="info-wrapper__conditions" data-conditions>Conditions</span>
-        <span class="info-wrapper__temp" data-scale="f" data-temp>0</span>
+        <span class="info-wrapper__temp" data-active-scale="f" data-temp>0</span>
         <span class="info-wrapper__degree">&#xb0</span>
         <!-- celsius -->
-        <button class="info-wrapper__btn info-wrapper__btn--c" data-btn>&#x2103</button> 
+        <button class="info-wrapper__btn info-wrapper__btn--c" data-btn data-scale="c">&#x2103</button> 
         <!-- fahrenheit -->
-        <button class="info-wrapper__btn info-wrapper__btn--f" data-btn = "active">&#x2109</button>
+        <button class="info-wrapper__btn info-wrapper__btn--f" data-btn = "active" data-scale="f">&#x2109</button>
     `
     weatherInfoWrapper.className = "info-wrapper"
+
+    const btns = weatherInfoWrapper.querySelectorAll("[data-btn]")
+    btns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            handleTempChangeBtn();
+        })
+    })
+
     return weatherInfoWrapper;
 }
 
@@ -106,10 +143,7 @@ function locationInputForm() {
         const inputField = locationInputSection.querySelector(".input-form__input-field");
         const userInput = inputField.value; //need some form validation
         //TODO add loading animation for when processLocationInfo finishes
-        const locationInfo = await processLocationInfo(userInput);
-        renderLocation(locationInfo[0]);
-        renderTemp(locationInfo[1]);
-        renderConditions(locationInfo[2]);
+        handleFormSubmit(userInput);
         inputField.value = "";
     })
 

@@ -1,6 +1,6 @@
 :root {
     --color-bg-default: #F5F7FA;
-    --color-bg-card: #FFFFFF;
+    --color-bg-card: #ffffffe3;
   
     --color-text-primary: #263238;
     --color-text-secondary: #546E7A;
@@ -9,7 +9,7 @@
     --color-accent-shadow: #967016; 
     --color-error: #D32F2F;
   
-    --color-clear: #6CB4EE;
+    --color-clear: #a6d6fd;
     --color-overcast: #B0BEC5;
     --color-light-precip: #FFF176;
     --color-rain: #78909C;
@@ -25,7 +25,7 @@
 }
 
 html, body {
-    height: 100%;
+    height: 100%
 }
 
 html {
@@ -86,8 +86,9 @@ body {
     justify-items: center;
     row-gap: 10px;
     padding: 10px;
-    border-radius: 4px;
     width: 90%;
+    background-color: var(--color-bg-card);
+    border-radius: 40px;
 }
 
 .info-wrapper__conditions {
@@ -139,6 +140,7 @@ body {
 .location-input-section {
     width: 800px;
     max-width: 100%;
+    margin-bottom: 20px;
 }
 
 .location-input-form {
@@ -153,7 +155,7 @@ input {
     caret-color: var(--color-accent);
     color: var(--color-text-primary);
     font: inherit;
-    background: none;
+    background-color: var(--color-bg-card);
     border: 1px solid var(--color-text-secondary);
     padding: 0.3rem;
     border-radius: 40px;
