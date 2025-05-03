@@ -132,7 +132,7 @@ body {
     cursor: pointer;
 }
 
-[data-btn = "active"] {
+[data-btn-active = true] {
     background-color: var(--color-accent);
     box-shadow: 0 0 10px var(--color-accent-shadow) inset;
 }
@@ -161,6 +161,11 @@ input {
     border-radius: 40px;
     padding-left: 10px;
     flex-grow: 1;
+}
+
+input:focus {
+    outline: none;
+    border: 2px solid var(--color-accent);
 }
 
 .input-form__submit-btn {

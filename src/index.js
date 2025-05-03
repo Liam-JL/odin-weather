@@ -41,26 +41,16 @@ function renderLocation(location) {
 
 function renderTemp(temp) {
     const tempDisplay = document.querySelector("[data-temp]");
-    tempDisplay.textContent = Math.floor(temp);
+    if (tempDisplay.dataset.activeScale === "c") {
+        tempDisplay.textContent = convert(temp, "f")
+    } else {
+    tempDisplay.textContent = Math.round(temp);
+    }
 }
 
 function renderConditions(conditions) {
     const conditionsDisplay = document.querySelector("[data-conditions]");
     conditionsDisplay.textContent = capitalize(conditions);
-}
-
-function convertTemp() {
-    // const tempDisplay = document.querySelector("[data-temp]");
-    // const temp = tempDisplay.textContent;
-    // const tempData = tempDisplay.dataset.activeScale;   
-    // console.log(tempData)
-}
-
-function handleTempChangeBtn() {
-    //get temp
-    //get active scale
-    //convert temp to scale that isn't the active scale
-    //change the active scale to scale that isn't the active scale
 }
 
 function changeBackgroundColor(conditions) {
@@ -72,10 +62,42 @@ async function handleFormSubmit(userInput) {
     const locationInfo = await processLocationInfo(userInput);
     renderLocation(locationInfo[0]);
     renderTemp(locationInfo[1]);
-    const conditions = locationInfo[2]
+    const conditions = locationInfo[2];
     renderConditions(conditions);
     changeBackgroundColor(conditions)
 }
+
+function handleTempChangeBtn(btn) {
+    changeActiveBtn(btn)
+    const tempElement = document.querySelector("[data-temp]");
+    tempElement.textContent = convert(Number(tempElement.textContent), tempElement.dataset.activeScale);
+    changeActiveScale();
+}
+
+function changeActiveBtn(btn) {
+    btn.dataset.btnActive = true;
+    const otherBtn = btn.nextElementSibling === null ? btn.previousElementSibling : btn.nextElementSibling;
+    otherBtn.dataset.btnActive = false;
+}
+
+function changeActiveScale() {
+    const tempElement = document.querySelector("[data-temp]");
+    tempElement.dataset.activeScale = tempElement.dataset.activeScale === "f" ? "c" : "f";
+    console.log("Active scale is: " + tempElement.dataset.activeScale)
+}
+
+function convert(value, scaleFrom) {
+    //°C = (°F − 32) x 5/9
+    // °F = (°C × 9/5) + 32
+    let converted = "";
+    if (scaleFrom === "f") {
+        converted = (value - 32) * 5/9;
+    } else if (scaleFrom === "c") {
+        converted = (value * 9/5) + 32
+    }
+    return Math.round(converted);
+}
+
 
 //---Widgets---//
 function locationDisplay() {
@@ -111,16 +133,16 @@ function weatherInfoDisplay() {
         <span class="info-wrapper__temp" data-active-scale="f" data-temp>0</span>
         <span class="info-wrapper__degree">&#xb0</span>
         <!-- celsius -->
-        <button class="info-wrapper__btn info-wrapper__btn--c" data-btn data-scale="c">&#x2103</button> 
+        <button class="info-wrapper__btn info-wrapper__btn--c" data-btn-active = false data-scale="c">&#x2103</button> 
         <!-- fahrenheit -->
-        <button class="info-wrapper__btn info-wrapper__btn--f" data-btn = "active" data-scale="f">&#x2109</button>
+        <button class="info-wrapper__btn info-wrapper__btn--f" data-btn-active = true data-scale="f">&#x2109</button>
     `
     weatherInfoWrapper.className = "info-wrapper"
 
-    const btns = weatherInfoWrapper.querySelectorAll("[data-btn]")
+    const btns = weatherInfoWrapper.querySelectorAll("button")
     btns.forEach(btn => {
         btn.addEventListener("click", () => {
-            handleTempChangeBtn();
+            handleTempChangeBtn(btn);
         })
     })
 
