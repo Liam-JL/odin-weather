@@ -148,7 +148,6 @@ function validateLocationInput(input) {
     }
 }
 
-
 //---Widgets---//
 function locationDisplay() {
     const locationDisplaySection = document.createElement("section");
