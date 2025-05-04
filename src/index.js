@@ -4,15 +4,30 @@ import colors from "./shared/styles/background-colors.json";
 
 //---Entities----
 async function weatherCaller(location) {
-    const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?unitGroup=us&key=4V24X88E3HZECB9ZLF5WJXLXH&contentType=json`);
-    const weatherData = await response.json();
-    return weatherData;
+    try{
+        const response = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}?unitGroup=us&key=4V24X88E3HZECB9ZLF5WJXLXH&contentType=json`);
+        let weatherData = await response.json();
+        return weatherData;
+    } catch (error) {
+        return {
+            address: "???",
+            currentConditions: {temp : "???",
+                conditions: "???"
+            } 
+        }
+    }
+
 }
 
 async function gifFinder(searchTerm) {
-    const response = await fetch(`https://api.giphy.com/v1/gifs/translate?api_key=nGmQJKrvZEtY46ZzxeNQMmQ0ZrP6yIFI&s=${searchTerm}`)
-    const gif = await response.json();
-    return gif.data.images.original.url;
+    try {
+        const response = await fetch(`https://api.giphy.com/v1/gifs/translate?api_key=nGmQJKrvZEtY46ZzxeNQMmQ0ZrP6yIFI&s=${searchTerm}`)
+        const gif = await response.json();
+        return gif.data.images.original.url;
+    } catch (error) {
+        return seal;
+    }
+    
 }
 
 //---Features---
@@ -47,16 +62,24 @@ function renderLocation(location) {
 
 function renderTemp(temp) {
     const tempDisplay = document.querySelector("[data-temp]");
-    if (tempDisplay.dataset.activeScale === "c") {
-        tempDisplay.textContent = convert(temp, "f")
+    if (temp !== "???") {
+        if (tempDisplay.dataset.activeScale === "c") {
+            tempDisplay.textContent = convert(temp, "f")
+        } else {
+        tempDisplay.textContent = Math.round(temp);
+        }
     } else {
-    tempDisplay.textContent = Math.round(temp);
+        tempDisplay.textContent = temp
     }
 }
 
 function renderConditions(conditions) {
     const conditionsDisplay = document.querySelector("[data-conditions]");
-    conditionsDisplay.textContent = capitalize(conditions);
+    try {
+        conditionsDisplay.textContent = capitalize(conditions);
+    } catch (error) {
+        conditionsDisplay.textContent = conditions;
+    }
 }
 
 function changeBackgroundColor(conditions) {
@@ -102,6 +125,10 @@ function changeActiveScale() {
 function convert(value, scaleFrom) {
     //°C = (°F − 32) x 5/9
     // °F = (°C × 9/5) + 32
+    if (isNaN(value)) {
+        return "???"
+    }
+
     let converted = "";
     if (scaleFrom === "f") {
         converted = (value - 32) * 5/9;
