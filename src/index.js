@@ -9,6 +9,12 @@ async function weatherCaller(location) {
     return weatherData;
 }
 
+async function gifFinder(searchTerm) {
+    const response = await fetch(`https://api.giphy.com/v1/gifs/translate?api_key=nGmQJKrvZEtY46ZzxeNQMmQ0ZrP6yIFI&s=${searchTerm}`)
+    const gif = await response.json();
+    return gif.data.images.original.url;
+}
+
 //---Features---
 //Expects weatherData json object from weatherCaller
 function parseWeatherData(data) {
@@ -58,6 +64,11 @@ function changeBackgroundColor(conditions) {
     app.style.backgroundColor = colors[conditions];
 }
 
+function renderGif(url) {
+    const gifDisplay = document.querySelector("[data-gif-display]");
+    gifDisplay.src = url;
+}
+
 async function handleFormSubmit(userInput) {
     const locationInfo = await processLocationInfo(userInput);
     renderLocation(locationInfo[0]);
@@ -65,6 +76,8 @@ async function handleFormSubmit(userInput) {
     const conditions = locationInfo[2];
     renderConditions(conditions);
     changeBackgroundColor(conditions)
+    const gifUrl = await gifFinder(conditions);
+    renderGif(gifUrl);
 }
 
 function handleTempChangeBtn(btn) {
@@ -119,7 +132,7 @@ function appMain() {
 function weatherGifDisplay() {
     const imgDiv = document.createElement("div");
     imgDiv.innerHTML = `
-        <img src="${seal}" alt="" class="gif-container__img">
+        <img src="${seal}" alt="" class="gif-container__img" data-gif-display>
     `
     imgDiv.classList = "gif-container";
     return imgDiv;
